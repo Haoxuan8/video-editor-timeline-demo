@@ -23,7 +23,9 @@ module.exports = {
     },
     output: {
         path: `${__dirname}/build`,
-        publicPath: "/",
+        publicPath: process.env.NODE_ENV === "production"
+            ? "./"
+            : "/",
         filename: () => {
             return isDev
                 ? "[name].js"
