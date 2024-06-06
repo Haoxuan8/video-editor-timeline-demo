@@ -47,6 +47,7 @@ const Handler = (props) => {
 
 const Clip: FC<IClipProps> = (props) => {
     const containerRef = useRef(null);
+    const dragOffsetRef = useRef(0);
     const [scaleContentCount, scaleLeftCount] = useMemo(() => {
         return [
             Math.ceil((props.clip.end - props.clip.start) / props.timeScale),
@@ -63,9 +64,14 @@ const Clip: FC<IClipProps> = (props) => {
         source: "clip",
         clipId: props.clip.id,
         duration: props.clip.end - props.clip.start,
-        data: props.clip.data
+        data: props.clip.data,
+        dragOffsetRef,
     }, containerRef, {
-        onDragStart: () => setDragging(true),
+        onDragStart: (e) => {
+            const rect = e.target.getBoundingClientRect();
+            dragOffsetRef.current = e.clientX - rect.left;
+            setDragging(true);
+        },
         onDragEnd: () => setDragging(false),
     });
 

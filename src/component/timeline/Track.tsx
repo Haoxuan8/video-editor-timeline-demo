@@ -40,17 +40,18 @@ const Track: FC<ITackProps> = (props) => {
         reorderClips(clips);
     };
 
-    const getEventScale = (e) => {
+    const getEventScale = (e, dragOffset = 0) => {
         if (!containerRef.current) return 0;
         const rect = containerRef.current.getBoundingClientRect();   
-        const offset = e.clientX - rect.left;
+        const offset = e.clientX - dragOffset - rect.left;
         const count = Math.ceil(offset / props.scaleWidth);
         const scale = count * props.timeScale;
         return scale;
     };
 
     const onDrop = (content, e) => {
-        const start = getEventScale(e);
+        const dragOffset = content.dragOffsetRef?.current ?? 0;
+        const start = getEventScale(e, dragOffset);
         if (content.source === "resourceManager") {
             addClip(content.data, start);
         } else if (content.source === "clip") {

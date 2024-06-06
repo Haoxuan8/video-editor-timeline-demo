@@ -58,17 +58,18 @@ const Timeline = () => {
         setSelectedClipId(clip.id);
     };
 
-    const getEventScale = (e) => {
+    const getEventScale = (e, dragOffset = 0) => {
         if (!tracksContainerRef.current) return 0;
         const rect = tracksContainerRef.current.getBoundingClientRect();   
-        const offset = e.clientX - rect.left;
+        const offset = e.clientX - dragOffset - rect.left;
         const count = Math.ceil(offset / scaleWidth);
         const scale = count * timeScale;
         return scale;
     };
 
     const onDrop = (content, event, index) => {
-        const start = getEventScale(event);
+        const dragOffset = content.dragOffsetRef?.current ?? 0;
+        const start = getEventScale(event, dragOffset);
         const newClipData = {
             id: generateId(),
             start: start,
